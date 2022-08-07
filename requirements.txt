@@ -1,0 +1,7 @@
+requests 
+BeautifulSoup
+lxml
+etree
+fnmatch
+re
+mechanize
