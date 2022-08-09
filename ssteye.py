@@ -7,7 +7,7 @@ import re, os
 import mechanize
 # Test for Server side template injections with simple math
 ## Made this and most my "eye" programs just to get better at programming and MAINLY other programs i found dont work how i want
-### TODO: import ssti list 
+### TODO: 
 def presentation():
 
     print("   ###########################")
@@ -22,6 +22,7 @@ def presentation():
 def gethref(site, proxy):
     headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36", "Content-Type":"text"}
     br = mechanize.Browser()
+    ssti_file = open("ssti_testpram.txt", "r")
     ur = (site)
     print(" [x] ~ SCAN: " + ur + " ~ [x]")
     try:
@@ -31,24 +32,25 @@ def gethref(site, proxy):
             okay = (link["name"])
             #print(okay) # br and bs4 need to link
             #print(ur)
-            ssti_list = ('#{7*7}')
-            br.open(ur)
-            br.select_form(nr=0)
-            br.form[okay] = ssti_list
-            zaza = br.submit().read()
+            for ssti in ssti_file.readlines():
+                ssti_list = i.strip("\n")
+                br.open(ur)
+                br.select_form(nr=0)
+                br.form[okay] = ssti_list
+                zaza = br.submit().read()
             #print(zaza)
-            exploitcode = ("*49*")
-            souper = BeautifulSoup(zaza, "html.parser")
-            if souper(text=lambda t: "49" in t):
-                print("\n [!] " + ur + " ::: "+ssti_list+" ::: [!] Exploited [!] \n")
-                fo = open("ssti_vuln_output.txt", "a+")
-                fo.write(ur + "SSTI Payload: " +ssti_list+ "\n")
-                fo.close
-            else:
-                print("Error code: weezle")
-                pass 
+                exploitcode = ("*49*")
+                souper = BeautifulSoup(zaza, "html.parser")
+                if souper(text=lambda t: "49" in t):
+                    print("\n [!] " + ur + " ::: "+ssti_list+" ::: [!] Exploited [!] \n")
+                    fo = open("ssti_vuln_output.txt", "a+")
+                    fo.write(ur + "SSTI Payload: " +ssti_list+ "\n")
+                    fo.close
+                else:
+                    print("Error with form: " + okay + " : URL: " + ur)
+                    pass 
     except:
-        print("\n  [!] BEANS [!]: " + ur)
+        print("\n  [!] No SSTI [!]: " + ur)
 
 
 
@@ -70,7 +72,7 @@ def title(url, proxy):
 			site = str(site)
 			if any([fnmatch.fnmatch(site, filtering) for filtering in blacklist]):
 				continue
-			print("\n [!] Found Branch: " +site)
+			#print("\n [!] Found Branch: " +site)
 			if site not in sitelists:
 				try:
 					r = requests.get(site, timeout=6, verify=True, headers=headers, proxies=proxy)
