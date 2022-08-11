@@ -30,25 +30,29 @@ def gethref(site, proxy):
         soup = BeautifulSoup(req.text, 'html.parser')
         for link in soup.select('input[name*=""]'):
             okay = (link["name"])
-            #print(okay) # br and bs4 need to link
+            print("Found Input: "+okay) # br and bs4 need to link
             #print(ur)
             for ssti in ssti_file.readlines():
-                ssti_list = i.strip("\n")
-                br.open(ur)
-                br.select_form(nr=0)
-                br.form[okay] = ssti_list
-                zaza = br.submit().read()
+                ssti_list = ssti.strip("\n")
+                print("Testing Code: " + ssti_list)
+                try:
+                    br.open(ur)
+                    br.select_form(nr=0)
+                    br.form[okay] = ssti_list
+                    zaza = br.submit().read()
             #print(zaza)
-                exploitcode = ("*49*")
-                souper = BeautifulSoup(zaza, "html.parser")
-                if souper(text=lambda t: "49" in t):
-                    print("\n [!] " + ur + " ::: "+ssti_list+" ::: [!] Exploited [!] \n")
-                    fo = open("ssti_vuln_output.txt", "a+")
-                    fo.write(ur + "SSTI Payload: " +ssti_list+ "\n")
-                    fo.close
-                else:
-                    print("Error with form: " + okay + " : URL: " + ur)
-                    pass 
+                    exploitcode = ("*49*")
+                    souper = BeautifulSoup(zaza, "html.parser")
+                    if souper(text=lambda t: "49" in t):
+                        print("\n [!] " + ur + " ::: "+ssti_list+" ::: [!] Exploited [!] \n")
+                        fo = open("ssti_vuln_output.txt", "a+")
+                        fo.write(ur + "SSTI Payload: " +ssti_list+ "\n")
+                        fo.close
+                    else:
+                        print("Error with form: " + okay + " : URL: " + ur)
+                        pass 
+                except:
+                    pass
     except:
         print("\n  [!] No SSTI [!]: " + ur)
 
